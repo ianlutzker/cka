@@ -1,0 +1,79 @@
+# ClusterRole and ClusterRoleBinding
+
+# Docs: https://kubernetes.io/docs/reference/access-authn-authz/rbac/
+
+# 1. A new user michelle joined the team. She will be focusing on the nodes in the cluster. Create the required ClusterRoles and ClusterRoleBindings so she gets access to the nodes.
+
+# Grant permission to access nodes.
+
+# 2. Michelle's responsibilities are growing and now she will be responsible for storage as well. Create the required ClusterRoles and ClusterRoleBindings to allow her access to Storage.
+
+# Get the API groups and resource names from command kubectl api-resources. Use the given spec:
+
+# ClusterRole: storage-admin
+# Resource: persistentvolumes
+# Resource: storageclasses
+# ClusterRoleBinding: michelle-storage-admin
+# ClusterRoleBinding Subject: michelle
+# ClusterRoleBinding Role: storage-admin
+
+# Commands:
+
+# kubectl get clusterrole(s) --no-headers | wc -l # Count the number of ClusterRoles without the header row.
+# kubectl get clusterrolebinding(s) --no-headers | wc -l # Count the number of ClusterRoleBindings without the header row.
+
+# kubectl api-resources --namespaced=true -o wide # Namespace ONLY.
+# kubectl api-resources --namespaced=false -o wide # Cluster-wide.
+# kubectl api-resources --api-group=storage.k8s.io/v1
+
+### 1 ###
+# nano nodes-role-rolebinding.yaml
+# kubectl apply -f nodes-role-rolebinding.yaml
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: nodes-admin
+rules:
+- apiGroups: [""] # "" indicates the core API group.
+  resources: ["nodes"]
+  verbs: ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: michelle-nodes-admin
+subjects:
+- kind: User
+  name: michelle # Name is case sensitive.
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: nodes-admin
+  apiGroup: rbac.authorization.k8s.io
+
+### 2 ###
+# nano storage-role-rolebinding.yaml
+# kubectl apply -f storage-role-rolebinding.yaml
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: storage-admin
+rules:
+- apiGroups: ["", "storage.k8s.io/v1"] # "" indicates the core and storage API groups.
+  resources: ["persistentvolumes", "storageclasses"]
+  verbs: ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: michelle-storage-admin
+subjects:
+- kind: User
+  name: michelle # Name is case sensitive.
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: storage-admin
+  apiGroup: rbac.authorization.k8s.io
