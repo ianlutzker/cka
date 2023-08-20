@@ -1,4 +1,4 @@
-# Roles and RoleBinginds
+# Role and RoleBinding
 
 # Docs: https://kubernetes.io/docs/reference/access-authn-authz/rbac/
 
@@ -17,13 +17,13 @@
 
 # Commands:
 
-# kubectl get/describe roles -n <namespace>
-# kubectl get/describe rolebindings -n <namespace>
+# kubectl get/describe role(s) -n <namespace>
+# kubectl get/describe rolebinding(s) -n <namespace>
 # kubectl api-resources -o wide
 
 # kubectl get/describe pods -n <namespace> --as dev-user # Impersonation lets you invoke any command as a different user to test permissions. 
 
-# nano role+rolebinding.yaml
+# nano role-rolebinding.yaml
 # kubectl apply -f role+rolebinding.yaml
 
 apiVersion: rbac.authorization.k8s.io/v1
